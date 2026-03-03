@@ -1,20 +1,21 @@
 package com.logistics.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.logistics.repository.User;
-import com.logistics.repository.UserMapper;
 import com.logistics.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserMapper userMapper;
+    private JdbcTemplate jdbcTemplate;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -24,35 +25,42 @@ public class UserServiceImpl implements UserService {
         user.setCreatedAt(new Date().getTime());
         user.setUpdatedAt(new Date().getTime());
         user.setStatus(1);
-        userMapper.insert(user);
+        String sql = "INSERT INTO user (username, password, email, phone, role, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(), user.getRole(), user.getStatus(), user.getCreatedAt(), user.getUpdatedAt());
         return user;
     }
 
     @Override
     public User login(String username, String password) {
-        QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("username", username);
-        User user = userMapper.selectOne(wrapper);
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            return user;
+        String sql = "SELECT * FROM user WHERE username = ?";
+        List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), username);
+        if (!users.isEmpty()) {
+            User user = users.get(0);
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                return user;
+            }
         }
         return null;
     }
 
     @Override
     public User getUserById(Long id) {
-        return userMapper.selectById(id);
+        String sql = "SELECT * FROM user WHERE id = ?";
+        List<User> users = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), id);
+        return users.isEmpty() ? null : users.get(0);
     }
 
     @Override
     public User updateUser(User user) {
         user.setUpdatedAt(new Date().getTime());
-        userMapper.updateById(user);
+        String sql = "UPDATE user SET username = ?, password = ?, email = ?, phone = ?, role = ?, status = ?, updated_at = ? WHERE id = ?";
+        jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(), user.getRole(), user.getStatus(), user.getUpdatedAt(), user.getId());
         return user;
     }
 
     @Override
     public boolean deleteUser(Long id) {
-        return userMapper.deleteById(id) > 0;
+        String sql = "DELETE FROM user WHERE id = ?";
+        return jdbcTemplate.update(sql, id) > 0;
     }
 }

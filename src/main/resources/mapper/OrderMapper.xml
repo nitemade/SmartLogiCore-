@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.repository.OrderMapper">
+    <insert id="insert" parameterType="com.logistics.repository.Order">
+        INSERT INTO `order` (order_no, user_id, customer_name, customer_phone, address, status, total_amount, created_at, updated_at)
+        VALUES (#{orderNo}, #{userId}, #{customerName}, #{customerPhone}, #{address}, #{status}, #{totalAmount}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <select id="selectById" parameterType="Long" resultType="com.logistics.repository.Order">
+        SELECT * FROM `order` WHERE id = #{id}
+    </select>
+
+    <select id="selectByUserId" parameterType="Long" resultType="com.logistics.repository.Order">
+        SELECT * FROM `order` WHERE user_id = #{userId}
+    </select>
+
+    <select id="selectAll" resultType="com.logistics.repository.Order">
+        SELECT * FROM `order`
+    </select>
+
+    <update id="updateById" parameterType="com.logistics.repository.Order">
+        UPDATE `order`
+        SET order_no = #{orderNo}, user_id = #{userId}, customer_name = #{customerName}, customer_phone = #{customerPhone}, 
+            address = #{address}, status = #{status}, total_amount = #{totalAmount}, updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM `order` WHERE id = #{id}
+    </delete>
+</mapper>

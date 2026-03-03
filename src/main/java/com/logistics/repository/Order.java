@@ -1,14 +1,9 @@
 package com.logistics.repository;
 
 import lombok.Data;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 
 @Data
-@TableName("order")
 public class Order {
-    @TableId(type = IdType.AUTO)
     private Long id;
     private String orderNo;
     private Long userId;

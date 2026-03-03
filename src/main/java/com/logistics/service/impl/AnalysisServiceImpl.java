@@ -1,11 +1,11 @@
 package com.logistics.service.impl;
 
-import com.logistics.repository.Order;
-import com.logistics.repository.OrderMapper;
 import com.logistics.repository.Inventory;
-import com.logistics.repository.InventoryMapper;
+import com.logistics.repository.Order;
 import com.logistics.service.AnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -16,14 +16,12 @@ import java.util.Map;
 public class AnalysisServiceImpl implements AnalysisService {
 
     @Autowired
-    private OrderMapper orderMapper;
-
-    @Autowired
-    private InventoryMapper inventoryMapper;
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public Map<String, Object> getOrderAnalysis() {
-        List<Order> orders = orderMapper.selectList(null);
+        String sql = "SELECT * FROM `order`";
+        List<Order> orders = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Order.class));
         Map<String, Object> analysis = new HashMap<>();
         
         int totalOrders = orders.size();
@@ -59,7 +57,8 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Override
     public Map<String, Object> getInventoryAnalysis() {
-        List<Inventory> inventories = inventoryMapper.selectList(null);
+        String sql = "SELECT * FROM inventory";
+        List<Inventory> inventories = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Inventory.class));
         Map<String, Object> analysis = new HashMap<>();
 
         int totalProducts = inventories.size();
@@ -85,7 +84,8 @@ public class AnalysisServiceImpl implements AnalysisService {
 
     @Override
     public Map<String, Object> getSalesAnalysis() {
-        List<Order> orders = orderMapper.selectList(null);
+        String sql = "SELECT * FROM `order`";
+        List<Order> orders = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Order.class));
         Map<String, Object> analysis = new HashMap<>();
 
         double totalSales = 0;

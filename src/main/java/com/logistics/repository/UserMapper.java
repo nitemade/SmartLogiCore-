@@ -1,6 +1,9 @@
 package com.logistics.repository;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
-public interface UserMapper extends BaseMapper<User> {
+public interface UserMapper {
+    void insert(User user);
+    User selectByUsername(String username);
+    User selectById(Long id);
+    void updateById(User user);
+    int deleteById(Long id);
 }

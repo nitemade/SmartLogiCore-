@@ -1,6 +1,12 @@
 package com.logistics.repository;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import java.util.List;
 
-public interface InventoryMapper extends BaseMapper<Inventory> {
+public interface InventoryMapper {
+    void insert(Inventory inventory);
+    Inventory selectById(Long id);
+    List<Inventory> selectAll();
+    List<Inventory> selectLowStock(int threshold);
+    void updateById(Inventory inventory);
+    int deleteById(Long id);
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.repository.InventoryMapper">
+    <insert id="insert" parameterType="com.logistics.repository.Inventory">
+        INSERT INTO inventory (product_name, product_code, quantity, price, description, created_at, updated_at)
+        VALUES (#{productName}, #{productCode}, #{quantity}, #{price}, #{description}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <select id="selectById" parameterType="Long" resultType="com.logistics.repository.Inventory">
+        SELECT * FROM inventory WHERE id = #{id}
+    </select>
+
+    <select id="selectAll" resultType="com.logistics.repository.Inventory">
+        SELECT * FROM inventory
+    </select>
+
+    <update id="updateById" parameterType="com.logistics.repository.Inventory">
+        UPDATE inventory
+        SET product_name = #{productName}, product_code = #{productCode}, quantity = #{quantity}, 
+            price = #{price}, description = #{description}, updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM inventory WHERE id = #{id}
+    </delete>
+
+    <select id="selectLowStock" parameterType="Integer" resultType="com.logistics.repository.Inventory">
+        SELECT * FROM inventory WHERE quantity &lt; #{threshold}
+    </select>
+</mapper>
